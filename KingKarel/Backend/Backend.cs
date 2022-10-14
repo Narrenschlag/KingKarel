@@ -241,11 +241,12 @@ namespace KingKarel
             Console.WriteLine();
             Console.WriteLine();
             draw("History", ConsoleColor.Magenta);
+            draw("   " + (1/Game.timeBetweenFrames).ToString("n1").Replace(",", ".") + "/sec", ConsoleColor.Gray);
 
             // Writes the last ten(10) turns down
             Console.WriteLine();
             for (int i = 0; i < 10 && i < history.Count; i++)
-                Console.WriteLine($"Turn {turn - i - 1}: {history[i]}");
+                Console.WriteLine($"{turn - i - 1}: {history[i]}");
             #endregion
         }
     }

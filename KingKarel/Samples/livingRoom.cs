@@ -2,7 +2,7 @@
 {
     internal class livingRoom : Backend
     {
-        void Run()
+        public static void run()
         {
             while (frontIsClear())
                 move();
@@ -15,7 +15,7 @@
             for (int i = 0; i < 3; i++)
                 turnLeft();
 
-            while (!beeperHere())
+            while (!beepersPresent())
                 move();
 
             pickBeeper();

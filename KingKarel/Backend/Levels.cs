@@ -14,22 +14,23 @@ namespace KingKarel
         public static Level livingRoom = new Level()
         {
             start = new Vector2(0, 0),
-            size = new Vector2(6, 5),
+            size = new Vector2(10, 10),
             title = "livingRoom",
             beepers = 0,
 
             walls = new Vector2[]
             {
-                new Vector2(3, 0),
-                new Vector2(3, 1),
-                new Vector2(3, 2),
-                new Vector2(4, 2),
-                new Vector2(5, 2)
+                new Vector2(6, 0),
+                new Vector2(6, 1),
+                new Vector2(6, 2),
+                new Vector2(7, 2),
+                new Vector2(8, 2),
+                new Vector2(9, 2)
             },
 
             drops = new Vector2[]
             {
-                new Vector2(4, 3)
+                new Vector2(7, 3)
             }
         };
         #endregion
