@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
-using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Drawing;
+using System.Numerics;
+using System.Linq;
+using System;
 
 namespace KingKarel
 {
@@ -33,26 +30,34 @@ namespace KingKarel
             return true;
         }
 
-        public static bool frontIsBlocked() => !frontIsFree();
-        public static bool frontIsFree()
+        public static bool frontIsBlocked() => !frontIsClear();
+        public static bool frontIsClear()
         {
             clampDir();
             return isFree(FrontPosition);
         }
 
-        public static bool rightIsBlocked() => !rightIsFree();
-        public static bool rightIsFree() => isFree(position + new Vector2(1, 0));
+        public static bool rightIsClear() => isFree(position + new Vector2(1, 0));
+        public static bool rightIsBlocked() => !rightIsClear();
 
-        public static bool downIsBlocked() => !downIsFree();
-        public static bool downIsFree() => isFree(position + new Vector2(0, -1));
+        public static bool leftIsClear() => isFree(position + new Vector2(-1, 0));
+        public static bool leftIsBlocked() => !leftIsClear();
 
-        public static bool leftIsBlocked() => !leftIsFree();
-        public static bool leftIsFree() => isFree(position + new Vector2(-1, 0));
+        public static bool beepersPresent() => drops.ContainsKey(position);
+        public static bool noBeepersPresent() => !beepersPresent();
 
-        public static bool upIsBlocked() => !upIsFree();
-        public static bool upIsFree() => isFree(position + new Vector2(0, 1));
+        public static bool noBeepersInBag() => !beepersInBag();
+        public static bool beepersInBag() => beepers > 0;
 
-        public static bool beeperHere() => drops.ContainsKey(position);
+        public static bool facingEast() => direction == 0;
+        public static bool facingSouth() => direction == 1;
+        public static bool facingWest() => direction == 2;
+        public static bool facingNorth() => direction == 3;
+
+        public static bool notFacingEast() => !facingEast();
+        public static bool notFacingSouth() => !facingSouth();
+        public static bool notFacingWest() => !facingWest();
+        public static bool notFacingNorth() => !facingNorth();
         #endregion
 
         #region Actions
@@ -85,6 +90,17 @@ namespace KingKarel
             update("Turned left");
         }
 
+        public static void putBeeper()
+        {
+            if (beepers > 0)
+            {
+                if (!drops.ContainsKey(position)) drops.Add(position, 0);
+                drops[position]++;
+                beepers--;
+            }
+            else throw new Exception("You don't have any beepers to put");
+        }
+
         public static void pickBeeper()
         {
             if (drops.ContainsKey(position))
@@ -95,17 +111,6 @@ namespace KingKarel
                 if (drops[position] < 1) drops.Remove(position);
             }
             else throw new Exception("No beeper has been found at that position");
-        }
-
-        public static void putBeeper()
-        {
-            if (beepers > 0)
-            {
-                if (!drops.ContainsKey(position)) drops.Add(position, 0);
-                drops[position]++;
-                beepers--;
-            }
-            else throw new Exception("You don't have any beepers to put");
         }
 
         public static void doNothing() => update("Did nothing");
@@ -143,11 +148,30 @@ namespace KingKarel
         }
         #endregion
 
+        #region Private Functions
+        private static void clampDir()
+        {
+            if (direction > 3) direction = direction % 4;
+            else if (direction < 0) direction = 4 - (Math.Abs(direction) % 4);
+        }
+
+        private static void draw(string text, ConsoleColor color)
+        {
+            ConsoleColor old = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+
+            Console.Write(text);
+            Console.ForegroundColor = old;
+        }
+        #endregion
+
         private static void update(string turnInfo)
         {
+            // Declare level to have a shortcut
             Level level = Program.level;
 
-            if(!Program.loaded)
+            #region Setup
+            if (!Program.loaded)
             {
                 drops = new Dictionary<Vector2, int>();
                 if(level.drops != null)
@@ -161,13 +185,17 @@ namespace KingKarel
                 history = new List<string>();
                 turn = 0;
             }
+            #endregion
 
+            #region Console Preperation
             // Clears the console
             Console.Clear();
 
             // Console title
             Console.Title = level.title;
-            
+            #endregion
+
+            #region Visual Grid Generation
             // Each row
             for (int y = (int)Math.Floor(level.size.Y); y >= -1; y--)
             {
@@ -197,13 +225,17 @@ namespace KingKarel
                     draw(" ", ConsoleColor.White);
                 }
             }
+            #endregion
 
+            #region Beeper Count
             Console.WriteLine();
             Console.WriteLine();
             string beepers = Backend.beepers > 99 ? "99+" : Backend.beepers.ToString();
             draw($"Beeper Count: " + beepers, ConsoleColor.White);
+            #endregion
 
-            if(turn > 0) history.Insert(0, turnInfo);
+            #region History
+            if (turn > 0) history.Insert(0, turnInfo);
             turn++;
 
             Console.WriteLine();
@@ -214,21 +246,7 @@ namespace KingKarel
             Console.WriteLine();
             for (int i = 0; i < 10 && i < history.Count; i++)
                 Console.WriteLine($"Turn {turn - i - 1}: {history[i]}");
-        }
-        
-        private static void clampDir()
-        {
-            if (direction > 3) direction = direction % 4;
-            else if (direction < 0) direction = 4 - (Math.Abs(direction) % 4);
-        }
-
-        private static void draw(string text, ConsoleColor color)
-        {
-            ConsoleColor old = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-
-            Console.Write(text);
-            Console.ForegroundColor = old;
+            #endregion
         }
     }
 }

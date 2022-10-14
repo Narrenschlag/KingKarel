@@ -1,15 +1,17 @@
-﻿/**
-* Comments may be included anywhere in the program between a
-* slash - star and the corresponding star - slash characters .
-*/
+﻿/*
+
+// Vorname Nachname
+// Blatt <> Aufgabe <>
+
 include " karel .h";
 
-void setup() {
-	loadWorld(" nameOfWorld "); /* Filename of Karel 's world */
+void setup() 
+{
+	loadWorld(" nameOfWorld ");
 }
 
-void run() {
-	/* statements in the body of the function */
-}
+void run() 
+{
 
-/* definitions of your own functions */
+}
+*/

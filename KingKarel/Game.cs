@@ -4,11 +4,13 @@
     {
         public const float timeBetweenFrames = .5f;
 
+        // Runs when application is started
         public static void setup()
         {
-            Levels.Load(Levels.empty10x10);
+            Levels.Load(Levels.livingRoom);
         }
 
+        // Runs after setup
         public static void run()
         {
 

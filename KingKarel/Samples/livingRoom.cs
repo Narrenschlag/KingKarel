@@ -4,7 +4,7 @@
     {
         void Run()
         {
-            while (frontIsFree())
+            while (frontIsClear())
                 move();
 
             turnLeft();
@@ -20,7 +20,7 @@
 
             pickBeeper();
 
-            while (frontIsFree())
+            while (frontIsClear())
                 move();
         }
     }
