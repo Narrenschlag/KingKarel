@@ -73,11 +73,11 @@ namespace KingKarel
             // Can walk here
             else
             {
-                Thread.Sleep((int)Math.Round(Game.timeBetweenFrames * 1000));
                 Vector2 old = position;
                 position = NEW;
 
                 update($"Moved from {old} to {NEW}");
+                wait();
             }
         }
 
@@ -86,8 +86,8 @@ namespace KingKarel
             direction--;
             clampDir();
 
-            Thread.Sleep((int)Math.Round(Game.timeBetweenFrames * 1000));
             update("Turned left");
+            wait();
         }
 
         public static void putBeeper()
@@ -99,6 +99,8 @@ namespace KingKarel
                 beepers--;
             }
             else throw new Exception("You don't have any beepers to put");
+
+            wait();
         }
 
         public static void pickBeeper()
@@ -111,6 +113,8 @@ namespace KingKarel
                 if (drops[position] < 1) drops.Remove(position);
             }
             else throw new Exception("No beeper has been found at that position");
+
+            wait();
         }
 
         public static void doNothing() => update("Did nothing");
@@ -163,6 +167,8 @@ namespace KingKarel
             Console.Write(text);
             Console.ForegroundColor = old;
         }
+
+        private static void wait() => Thread.Sleep((int)Math.Round(Game.timeBetweenFrames * 1000));
         #endregion
 
         private static void update(string turnInfo)
