@@ -2,7 +2,6 @@
 using System.Numerics;
 using System.Linq;
 using System;
-using System.Security.Cryptography.X509Certificates;
 
 namespace KingKarel
 {
@@ -87,7 +86,7 @@ namespace KingKarel
                 }
 
                 // Start new line
-                Console.WriteLine();
+                "".drawLine(ConsoleColor.White);
             }
         }
 

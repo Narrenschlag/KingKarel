@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Linq;
 using System;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 
 namespace KingKarel
 {
@@ -81,6 +82,8 @@ namespace KingKarel
 
         public static void putBeeper()
         {
+            int old = map.BeepersAt(position);
+
             if (beepers > 0)
             {
                 map.ModifyBeepers(position, +1);
@@ -88,11 +91,14 @@ namespace KingKarel
             }
             else throw new Exception("You don't have any beepers to put");
 
+            update($"Put beeper ({old} -> {map.BeepersAt(position)})");
             Tools.wait();
         }
 
         public static void pickBeeper()
         {
+            int old = map.BeepersAt(position);
+
             if (map.BeepersAt(position) > 0)
             {
                 map.ModifyBeepers(position, -1);
@@ -100,10 +106,19 @@ namespace KingKarel
             }
             else throw new Exception("No beeper has been found at that position");
 
+            update($"Picked beeper ({old} -> {map.BeepersAt(position)})");
             Tools.wait();
         }
 
         public static void doNothing() => update("Did nothing");
+        #endregion
+
+        #region Private Functions
+        private static void clampDir()
+        {
+            if (direction > 3) direction = direction % 4;
+            else if (direction < 0) direction = 4 - (Math.Abs(direction) % 4);
+        }
         #endregion
 
         #region References
@@ -138,14 +153,6 @@ namespace KingKarel
         }
         #endregion
 
-        #region Private Functions
-        private static void clampDir()
-        {
-            if (direction > 3) direction = direction % 4;
-            else if (direction < 0) direction = 4 - (Math.Abs(direction) % 4);
-        }
-        #endregion
-
         public static void onLoadMap()
         {
             Backend.beepers = map.level.beeperCountStart;
@@ -158,7 +165,7 @@ namespace KingKarel
         private static void update(string turnInfo)
         {
             #region Console Preperation
-            // Clears the console
+            // Clear console
             Console.Clear();
 
             // Console title
@@ -169,25 +176,29 @@ namespace KingKarel
             map.draw(position, direction);
 
             #region Beeper Count
-            Console.WriteLine();
+            "".drawLine();
             string beepers = Backend.beepers > 99 ? "99+" : Backend.beepers.ToString();
-            $"Beeper Count: {beepers}".draw(ConsoleColor.White);
+            $"Beeper Count: {beepers}".draw();
             #endregion
 
             #region History
             if (turn > 0) history.Insert(0, turnInfo);
             turn++;
 
-            Console.WriteLine();
-            Console.WriteLine();
+            "".drawLine();
+            "".drawLine();
+
             "History".draw(ConsoleColor.Magenta);
             ("   " + (1 / Game.timeBetweenFrames).ToString("n1").Replace(",", ".") + "/sec").draw(ConsoleColor.Gray);
 
             // Writes the last ten(10) turns down
-            Console.WriteLine();
+            "".drawLine();
             for (int i = 0; i < 10 && i < history.Count; i++)
-                Console.WriteLine($"{turn - i - 1}: {history[i]}");
+                ($"{turn - i - 1}: {history[i]}").drawLine();
             #endregion
+
+            // Flush console text
+            Tools.flush();
         }
     }
 }
