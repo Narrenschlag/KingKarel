@@ -4,9 +4,6 @@ namespace KingKarel
 {
     internal class Program
     {
-        public static bool loaded = false;
-        public static Level level;
-
         static void Main(string[] args)
         {
             Game.setup();

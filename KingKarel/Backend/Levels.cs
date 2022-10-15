@@ -4,11 +4,7 @@ namespace KingKarel
 {
     internal class Levels
     {
-        public static void Load(Level level)
-        {
-            Program.loaded = false;
-            Program.level = level;
-        }
+        public static void Load(Level level) => new Map(level);
 
         #region Living Room
         public static Level livingRoom = new Level()
@@ -16,7 +12,7 @@ namespace KingKarel
             start = new Vector2(0, 0),
             size = new Vector2(10, 10),
             title = "livingRoom",
-            beepers = 0,
+            beeperCountStart = 0,
 
             walls = new Vector2[]
             {
@@ -28,7 +24,7 @@ namespace KingKarel
                 new Vector2(9, 2)
             },
 
-            drops = new Vector2[]
+            beepers = new Vector2[]
             {
                 new Vector2(7, 3)
             }
@@ -47,9 +43,9 @@ namespace KingKarel
 
     public class Level
     {
-        public Vector2[] walls, drops;
+        public Vector2[] walls, beepers;
+        public int beeperCountStart;
         public Vector2 size, start;
         public string title;
-        public int beepers;
     }
 }
