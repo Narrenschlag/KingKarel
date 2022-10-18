@@ -4,6 +4,7 @@ Coded by Maximilian Schecklmann
 
 # Graphics
 This application makes use of the native console of your operating system.
+
 ![KingKarel](https://user-images.githubusercontent.com/71547522/195885383-b02b5b15-07ff-46f5-a404-3557fa38edbe.gif)
 
 # Logic
