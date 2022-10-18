@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace KingKarel
 {
@@ -24,9 +25,9 @@ namespace KingKarel
                 new Vector2(9, 2)
             },
 
-            beepers = new Vector2[]
+            beepers = new KeyValuePair<Vector2, int>[]
             {
-                new Vector2(7, 3)
+                new KeyValuePair<Vector2, int>(new Vector2(7, 3), 1)
             }
         };
         #endregion
@@ -39,11 +40,30 @@ namespace KingKarel
             title = "empty10x10"
         };
         #endregion
+
+        #region Double Beepers
+        public static Level doubleBeepers = new Level()
+        {
+            size = new Vector2(5, 5),
+            start = new Vector2(0, 0),
+            title = "doubleBeepers",
+            beeperCountStart = 99999,
+
+            beepers = new KeyValuePair<Vector2, int>[]
+            {
+                new KeyValuePair<Vector2, int>(new Vector2(1, 0), 5)
+            },
+
+            walls = new Vector2[0]
+        };
+        #endregion
     }
 
     public class Level
     {
-        public Vector2[] walls, beepers;
+        public KeyValuePair<Vector2, int>[] beepers;
+        public Vector2[] walls;
+
         public int beeperCountStart;
         public Vector2 size, start;
         public string title;

@@ -1,10 +1,7 @@
-﻿namespace KingKarel
+﻿namespace KingKarel.Samples
 {
-    internal class Game : Backend
+    internal class doubleBeepers : Backend
     {
-        public const float timeBetweenFrames = .4f;
-
-        // Runs when application is started
         public void setup()
         {
             Levels.Load(Levels.doubleBeepers);
@@ -26,7 +23,6 @@
             for (int i = 0; i < 2; i++) turnLeft();
         }
 
-        // Runs after setup
         public void run()
         {
             while (noBeepersPresent()) move();

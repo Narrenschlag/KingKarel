@@ -22,8 +22,8 @@ namespace KingKarel
 
             beepers = new Dictionary<Vector2, int>();
             if (level.beepers != null)
-                foreach (Vector2 v2 in level.beepers)
-                    beepers.Add(new Vector2(v2.X, v2.Y), 1);
+                foreach (KeyValuePair<Vector2, int> b in level.beepers)
+                    beepers.Add(new Vector2(b.Key.X, b.Key.Y), b.Value);
 
             Backend.onLoadMap();
         }
@@ -57,6 +57,7 @@ namespace KingKarel
                     else
                     {
                         // Walls
+                        if(level.walls != null)
                         if (level.walls.Contains(point))
                         {
                             artWall.draw(ConsoleColor.Red);

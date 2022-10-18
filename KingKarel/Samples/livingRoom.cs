@@ -2,7 +2,12 @@
 {
     internal class livingRoom : Backend
     {
-        public static void run()
+        public void setup()
+        {
+            Levels.Load(Levels.livingRoom);
+        }
+
+        public void run()
         {
             while (frontIsClear())
                 move();

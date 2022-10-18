@@ -110,7 +110,11 @@ namespace KingKarel
             Tools.wait();
         }
 
-        public static void doNothing() => update("Did nothing");
+        public static void doNothing()
+        {
+            update("Did nothing");
+            Tools.wait();
+        }
         #endregion
 
         #region Private Functions

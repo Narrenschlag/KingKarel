@@ -4,16 +4,19 @@ namespace KingKarel
 {
     internal class Program
     {
+        public static Game game;
+
         static void Main(string[] args)
         {
-            Game.setup();
+            game = new Game();
+            game.setup();
 
             // Updates the console
             Backend.doNothing();
 
             try
             {
-                Game.run();
+                game.run();
             }
             catch (Exception ex)
             {
