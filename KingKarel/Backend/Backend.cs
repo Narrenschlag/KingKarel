@@ -27,10 +27,10 @@ namespace KingKarel
             return map.CanWalkTo(position, FrontPosition);
         }
 
-        public static bool rightIsClear() => map.CanWalkTo(position, position + new Vector2(1, 0));
+        public static bool rightIsClear() => map.CanWalkTo(position, RightPosition);
         public static bool rightIsBlocked() => !rightIsClear();
 
-        public static bool leftIsClear() => map.CanWalkTo(position, position + new Vector2(-1, 0));
+        public static bool leftIsClear() => map.CanWalkTo(position, LeftPosition);
         public static bool leftIsBlocked() => !leftIsClear();
 
         public static bool beepersPresent() => map.BeepersAt(position) > 0;
@@ -55,18 +55,18 @@ namespace KingKarel
         {
             clampDir();
 
-            Vector2 NEW = FrontPosition;
+            Vector2 next = FrontPosition;
 
             // Check if player can walk there
-            if (!map.CanWalkTo(position, NEW)) throw new Exception("Cannot walk into walls");
+            if (!map.CanWalkTo(position, next)) throw new Exception("Cannot walk into walls");
 
             // Can walk here
             else
             {
                 Vector2 old = position;
-                position = NEW;
+                position = next;
 
-                update($"Moved from {old} to {NEW}");
+                update($"Moved from {old} to {next}");
                 Tools.wait();
             }
         }
@@ -130,29 +130,62 @@ namespace KingKarel
         {
             get
             {
-                Vector2 NEW = position;
+                Vector2 next = position;
                 switch (direction)
                 {
                     case 0:
-                        NEW.X++;
+                        next.X++;
                         break;
 
                     case 1:
-                        NEW.Y--;
+                        next.Y--;
                         break;
 
                     case 2:
-                        NEW.X--;
+                        next.X--;
                         break;
 
                     case 3:
-                        NEW.Y++;
+                        next.Y++;
                         break;
 
                     default: break;
                 }
 
-                return NEW;
+                return next;
+            }
+        }
+
+        private static Vector2 RightPosition => position + RightOff;
+        private static Vector2 LeftPosition => position - RightOff;
+
+        private static Vector2 RightOff
+        {
+            get
+            {
+                Vector2 next = Vector2.Zero;
+                switch (direction)
+                {
+                    case 0:
+                        next.Y--;
+                        break;
+
+                    case 1:
+                        next.X--;
+                        break;
+
+                    case 2:
+                        next.Y++;
+                        break;
+
+                    case 3:
+                        next.X++;
+                        break;
+
+                    default: break;
+                }
+
+                return next;
             }
         }
         #endregion
@@ -193,7 +226,7 @@ namespace KingKarel
             "".drawLine();
 
             "History".draw(ConsoleColor.Magenta);
-            ("   " + (1 / Game.timeBetweenFrames).ToString("n1").Replace(",", ".") + "/sec").draw(ConsoleColor.Gray);
+            ("   " + (1 / HelloKarel.timeBetweenFrames).ToString("n1").Replace(",", ".") + "/sec").draw(ConsoleColor.Gray);
 
             // Writes the last ten(10) turns down
             "".drawLine();

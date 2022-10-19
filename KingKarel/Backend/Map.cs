@@ -43,13 +43,13 @@ namespace KingKarel
                         if (x < -1 || y < -1)
                         {
                             if (!InBounds(x, level.size.X) && !InBounds(y, level.size.Y)) " ".draw(ConsoleColor.White);
-                            else (x < 0 ? (y%10).ToString() : (x % 10).ToString()).draw(ConsoleColor.White);
+                            else (x < 0 ? (y%10).ToString() : (x % 10).ToString()).draw(ConsoleColor.DarkGray);
                         }
 
                         // Border
                         else
                         {
-                            artWall.draw(ConsoleColor.Red);
+                            artWall.draw(ConsoleColor.DarkGray);
                         }
                     }
 

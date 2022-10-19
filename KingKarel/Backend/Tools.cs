@@ -22,7 +22,7 @@ namespace KingKarel
             Console.ForegroundColor = old;
         }
 
-        public static void wait() => Thread.Sleep((int)Math.Round(Game.timeBetweenFrames * 1000));
+        public static void wait() => Thread.Sleep((int)Math.Round(HelloKarel.timeBetweenFrames * 1000));
 
         private static StringBuilder txt = new StringBuilder();
 

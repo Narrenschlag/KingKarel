@@ -4,11 +4,11 @@ namespace KingKarel
 {
     internal class Program
     {
-        public static Game game;
+        public static HelloKarel game;
 
         static void Main(string[] args)
         {
-            game = new Game();
+            game = new HelloKarel();
             game.setup();
 
             // Updates the console
