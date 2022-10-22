@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Text;
 using System;
-
 namespace KingKarel
 {
     internal static class Tools
@@ -9,28 +8,33 @@ namespace KingKarel
         public static void drawLine(this string text, ConsoleColor color) => draw($"\n{text}", color);
         public static void drawLine(this string text) => draw($"\n{text}");
 
-        public static void draw(this string text) => text.append();
-        public static void draw(this string text, ConsoleColor color)
+        public static void draw(this string text, ConsoleColor color = default)
         {
-            ConsoleColor old = Console.ForegroundColor;
-            Console.ForegroundColor = color;
+            if (color.Equals(default)) color = Tools.color;
 
-            // Flush so there is no string left
-            flush();
+            if(color != Tools.color)
+            {
+                flush();
+                Tools.color = color;
+            }
 
-            Console.Write(text);
-            Console.ForegroundColor = old;
+            Tools.text.Append(text);
         }
 
         public static void wait() => Thread.Sleep((int)Math.Round(HelloKarel.timeBetweenFrames * 1000));
 
-        private static StringBuilder txt = new StringBuilder();
+        private static StringBuilder text = new StringBuilder();
+        private static ConsoleColor color = ConsoleColor.White;
 
-        public static void append(this string txt) => Tools.txt.Append(txt);
         public static void flush()
         {
-            Console.Write(txt.ToString());
-            txt.Clear();
+            ConsoleColor old = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+
+            Console.Write(text.ToString());
+            text.Clear();
+
+            Console.ForegroundColor = old;
         }
     }
 }

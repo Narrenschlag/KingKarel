@@ -2,12 +2,12 @@
 {
     internal class HelloKarel : Backend
     {
-        public const float timeBetweenFrames = .05f;
+        public const float timeBetweenFrames = .01f;
 
         // Runs when application is started
         public void setup()
         {
-            Levels.Load(Levels.Mining3);
+            Levels.Load(Levels.DiamondMining1);
         }
 
         // Turn by 180°

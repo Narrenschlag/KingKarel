@@ -12,8 +12,8 @@ namespace KingKarel
         public Level level;
 
         private const string artPlayer = "►▼◄▲";
-        private const string artEmpty = ".";
-        private const string artWall = "■";
+        private const string artEmpty = "*";
+        private const string artWall = "█";
 
         public Map(Level level)
         {
@@ -22,8 +22,8 @@ namespace KingKarel
 
             beepers = new Dictionary<Vector2, int>();
             if (level.beepers != null)
-                foreach (KeyValuePair<Vector2, int> b in level.beepers)
-                    beepers.Add(new Vector2(b.Key.X, b.Key.Y), b.Value);
+                foreach (Beeper b in level.beepers)
+                    beepers.Add(b.point, b.count);
 
             Backend.onLoadMap();
         }
@@ -34,7 +34,9 @@ namespace KingKarel
             {
                 for (int x = -2; x < level.size.X + 1; x++)
                 {
+                    ConsoleColor color = ConsoleColor.DarkGray;
                     Vector2 point = new Vector2(x, y);
+                    string spaceLine = " ";
 
                     // Out of bounds
                     if (x < 0 || y < 0 || x >= level.size.X || y >= level.size.Y)
@@ -42,14 +44,15 @@ namespace KingKarel
                         // Number grid
                         if (x < -1 || y < -1)
                         {
-                            if (!InBounds(x, level.size.X) && !InBounds(y, level.size.Y)) " ".draw(ConsoleColor.White);
-                            else (x < 0 ? (y%10).ToString() : (x % 10).ToString()).draw(ConsoleColor.DarkGray);
+                            if (!InBounds(x, level.size.X) && !InBounds(y, level.size.Y)) spaceLine += " ";
+                            else spaceLine += x < 0 ? y : x;
                         }
 
                         // Border
                         else
                         {
-                            artWall.draw(ConsoleColor.DarkGray);
+                            drawWall(ConsoleColor.DarkGray);
+                            continue;
                         }
                     }
 
@@ -57,44 +60,53 @@ namespace KingKarel
                     else
                     {
                         // Walls
-                        if(level.walls != null)
-                        if (level.walls.Contains(point))
+                        if (level.isWall(point))
                         {
-                            artWall.draw(ConsoleColor.Red);
+                            drawWall();
+                            continue;
                         }
 
                         // Player
                         else if (point == player)
                         {
-                            artPlayer[direction].ToString().draw(ConsoleColor.Yellow);
+                            spaceLine += artPlayer[direction];
+                            color = ConsoleColor.Yellow;
                         }
 
                         // Beepers
                         else if (beepers.ContainsKey(point))
                         {
-                            beepers[point].ToString().draw(ConsoleColor.Yellow);
+                            spaceLine += beepers[point];
+                            color = ConsoleColor.Yellow;
                         }
 
                         // Nothing
                         else
                         {
-                            artEmpty.draw(ConsoleColor.DarkGray);
+                            spaceLine += artEmpty;
                         }
                     }
 
                     // Draw space
-                    " ".draw(ConsoleColor.White);
+                    if (spaceLine.Length < 3) spaceLine += " ";
+                    spaceLine.draw(color);
                 }
 
                 // Start new line
                 "".drawLine(ConsoleColor.White);
+
+                void drawWall(ConsoleColor color = ConsoleColor.DarkGray)
+                {
+                    for (int i = 0; i < 3; i++)
+                        artWall.draw(color);
+                }
             }
         }
 
         public bool InBounds(Vector2 position) => InBounds(position.X, level.size.X) && InBounds(position.Y, level.size.Y);
         public bool InBounds(float x, float size) => x >= 0 && x < size;
 
-        public bool CanWalkTo(Vector2 position, Vector2 newPosition) => !level.walls.Contains(newPosition) && InBounds(newPosition);
+        public bool CanWalkTo(Vector2 position, Vector2 newPosition) => !level.isWall(newPosition) && InBounds(newPosition);
 
         public int BeepersAt(Vector2 position) => beepers.TryGetValue(position, out int i) ? i : 0;
         public void ModifyBeepers(Vector2 position, int modifier)
