@@ -246,19 +246,18 @@ namespace KingKarel
                 #endregion
             }
 
-            // Increase turn count
-            turn++;
-
             // Beeper count
             string beepers = Backend.beepers > 99 ? "99+" : Backend.beepers.ToString();
             beepers += "     ";
             beepers.drawAt(beeperCountGrid);
 
             // Action history
-            history.Insert(0, turnInfo);
-            if (turn > 0)
-                for (int i = 0; i < 10 && i < history.Count; i++)
-                    ($"{turn - i - 1}: {history[i]}" + "                        ").drawAt((int)historyGrid.X, (int)historyGrid.Y + i);
+            if (turn > 0) history.Insert(0, turnInfo);
+            for (int i = 0; i < 10 && i < history.Count; i++)
+                ($"{turn - i - 1}: {history[i]}" + "                        ").drawAt((int)historyGrid.X, (int)historyGrid.Y + i);
+
+            // Increase turn count
+            turn++;
         }
     }
 }

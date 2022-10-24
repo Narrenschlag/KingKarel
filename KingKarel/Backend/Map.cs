@@ -33,16 +33,12 @@ namespace KingKarel
             Backend.onLoadMap();
         }
 
-        int GetRow(Vector2 v2)
+        public Vector2 ToGrid(Vector2 position)
         {
-            v2 = Vector2.Clamp(v2, Vector2.Zero, level.size);
-            return (int)level.size.Y - (int)v2.Y;
-        }
-
-        int GetX(Vector2 v2)
-        {
-            v2 = Vector2.Clamp(v2, Vector2.Zero, level.size);
-            return ((int)v2.X * 3 - 2) + (3 * 3);
+            Vector2 clamped = Vector2.Clamp(position, Vector2.Zero, level.size);
+            clamped.Y = (int)level.size.Y - (int)clamped.Y;
+            clamped.X = ((int)clamped.X * 3 - 2) + (3 * 3);
+            return clamped;
         }
 
         public void draw(Vector2 player, int direction)
@@ -118,8 +114,11 @@ namespace KingKarel
 
             // Draw Player
             {
-                "*".drawAt(GetX(oldPosition), GetRow(oldPosition));
-                artPlayer[direction].ToString().drawAt(GetX(player), GetRow(player), ConsoleColor.Red);
+                if (beepers.TryGetValue(oldPosition, out int beeperCount))
+                    beeperCount.ToString().drawAt(ToGrid(oldPosition));
+                else "*".drawAt(ToGrid(oldPosition));
+
+                artPlayer[direction].ToString().drawAt(ToGrid(player), ConsoleColor.Red);
             }
 
             oldPosition = player;

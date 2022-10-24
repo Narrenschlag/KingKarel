@@ -257,6 +257,16 @@ namespace KingKarel
             }
         };
         #endregion
+
+        #region Pyramid
+        public static Level Pyramid = new Level()
+        {
+            start = new Vector2(0, 0),
+            size = new Vector2(5, 5),
+            beeperCountStart = 99999,
+            title = "pyramid",
+        };
+        #endregion
     }
 
     public struct Level
