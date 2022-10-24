@@ -1,6 +1,7 @@
 ﻿using System.Threading;
-using System.Text;
 using System;
+using System.Numerics;
+
 namespace KingKarel
 {
     internal static class Tools
@@ -8,33 +9,41 @@ namespace KingKarel
         public static void drawLine(this string text, ConsoleColor color) => draw($"\n{text}", color);
         public static void drawLine(this string text) => draw($"\n{text}");
 
-        public static void draw(this string text, ConsoleColor color = default)
+        public static void draw(this string text, ConsoleColor color = ConsoleColor.DarkGray)
         {
-            if (color.Equals(default)) color = Tools.color;
+            Console.ForegroundColor = color;
+            Console.Write(text);
 
-            if(color != Tools.color)
+            string[] lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static void drawAt(this string text, Vector2 grid, ConsoleColor color = ConsoleColor.DarkGray) => text.drawAt((int)grid.X, (int)grid.Y, color);
+        public static void drawAt(this string text, int x, int y, ConsoleColor color = ConsoleColor.DarkGray)
+        {
+            // Save cursor values for reset
+            int oldX = Console.CursorLeft;
+            int oldY = Console.CursorTop;
+
+            try
             {
-                flush();
-                Tools.color = color;
+                Console.SetCursorPosition(x, y);
+                text.draw(color);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.Clear();
+                Console.WriteLine(e.Message);
             }
 
-            Tools.text.Append(text);
+            // Reset the cursor
+            Console.SetCursorPosition(oldX, oldY);
         }
 
         public static void wait() => Thread.Sleep((int)Math.Round(HelloKarel.timeBetweenFrames * 1000));
 
-        private static StringBuilder text = new StringBuilder();
-        private static ConsoleColor color = ConsoleColor.White;
-
-        public static void flush()
+        public static void clear()
         {
-            ConsoleColor old = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-
-            Console.Write(text.ToString());
-            text.Clear();
-
-            Console.ForegroundColor = old;
+            Console.Clear();
         }
     }
 }

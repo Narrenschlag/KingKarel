@@ -30,24 +30,36 @@
 
             // Check for beepers at position
             // and pick them up
-            while (beepersPresent()) pickBeeper();
+            for (int i = 0; i < 100; i++)
+                if (beepersPresent()) pickBeeper();
+                else break;
         }
 
         // Move until the right is not blocked anymore
         void moveUntilNoRight()
         {
-            while (rightIsBlocked() && frontIsClear()) moveAndPick();
+            for (int i = 0; i < 100; i++)
+                if (rightIsBlocked() && frontIsClear()) moveAndPick();
+                else break;
         }
 
         // Move until there is wall ahead
         void moveUntilWall()
         {
-            while (frontIsClear()) moveAndPick();
+            for (int i = 0; i < 100; i++)
+                if (frontIsClear()) moveAndPick();
+                else break;
         }
 
         #region No Recursion
         void noRecursion()
         {
+            // Pre Condition
+            // Karel stands x steps in front of a shaft
+            //
+            // Post Condition
+            // Karel cleared the shafts beepers and is
+            // standing behind the entrance of the shaft
             while (frontIsClear())
             {
                 // Walk to next cave
@@ -112,6 +124,12 @@
         #endregion
 
         #region recursion
+        // Pre Condition
+        // Karel stands x steps in front of a shaft
+        //
+        // Post Condition
+        // Karel cleared the shafts beepers and is
+        // standing behind the entrance of the shaft
         void recursion()
         {
             if (frontIsBlocked()) return;

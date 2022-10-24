@@ -16,6 +16,9 @@ namespace KingKarel
         private static Vector2 position;
         private static int beepers;
 
+        private static Vector2 beeperCountGrid;
+        private static Vector2 historyGrid;
+
         private static List<string> history;
         private static int turn;
 
@@ -201,41 +204,61 @@ namespace KingKarel
 
         private static void update(string turnInfo)
         {
-            #region Console Preperation
-            // Clear console
-            Console.Clear();
+            if (turn == 0)
+            {
+                #region Console Preperation
+                // Clear console
+                Tools.clear();
 
-            // Console title
-            Console.Title = map.level.title;
-            #endregion
+                // Console title
+                Console.CursorVisible = false;
+                Console.Title = map.level.title;
+                Console.SetWindowPosition(0, 0);
+                Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+                #endregion
+            }
 
             // Draw map
             map.draw(position, direction);
 
-            #region Beeper Count
-            "".drawLine();
-            string beepers = Backend.beepers > 99 ? "99+" : Backend.beepers.ToString();
-            $"Beeper Count: {beepers}".draw();
-            #endregion
+            if (turn == 0)
+            {
+                #region Beeper Count
+                "".drawLine();
+                string beeperText = "Beeper Count: ";
+                beeperText.draw(ConsoleColor.Magenta);
 
-            #region History
-            if (turn > 0) history.Insert(0, turnInfo);
+                beeperCountGrid = new Vector2(beeperText.Length, Console.CursorTop);
+                #endregion
+
+                #region History
+                if (turn > 0) history.Insert(0, turnInfo);
+
+                "".drawLine();
+                "".drawLine();
+
+                "History".draw(ConsoleColor.Magenta);
+                ("   " + (1 / HelloKarel.timeBetweenFrames).ToString("n1").Replace(",", ".") + "/sec").draw(ConsoleColor.Gray);
+
+                // Writes the last ten(10) turns down
+                "".drawLine();
+                historyGrid = new Vector2(Console.CursorLeft, Console.CursorTop);
+                #endregion
+            }
+
+            // Increase turn count
             turn++;
 
-            "".drawLine();
-            "".drawLine();
+            // Beeper count
+            string beepers = Backend.beepers > 99 ? "99+" : Backend.beepers.ToString();
+            beepers += "     ";
+            beepers.drawAt(beeperCountGrid);
 
-            "History".draw(ConsoleColor.Magenta);
-            ("   " + (1 / HelloKarel.timeBetweenFrames).ToString("n1").Replace(",", ".") + "/sec").draw(ConsoleColor.Gray);
-
-            // Writes the last ten(10) turns down
-            "".drawLine();
-            for (int i = 0; i < 10 && i < history.Count; i++)
-                ($"{turn - i - 1}: {history[i]}").drawLine();
-            #endregion
-
-            // Flush console text
-            Tools.flush();
+            // Action history
+            history.Insert(0, turnInfo);
+            if (turn > 0)
+                for (int i = 0; i < 10 && i < history.Count; i++)
+                    ($"{turn - i - 1}: {history[i]}" + "                        ").drawAt((int)historyGrid.X, (int)historyGrid.Y + i);
         }
     }
 }

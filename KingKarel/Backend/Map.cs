@@ -15,9 +15,14 @@ namespace KingKarel
         private const string artEmpty = "*";
         private const string artWall = "█";
 
+        private Vector2 oldPosition;
+        private bool mapDrawn;
+
         public Map(Level level)
         {
+            oldPosition = level.start;
             this.level = level;
+            mapDrawn = false;
             instance = this;
 
             beepers = new Dictionary<Vector2, int>();
@@ -28,79 +33,97 @@ namespace KingKarel
             Backend.onLoadMap();
         }
 
+        int GetRow(Vector2 v2)
+        {
+            v2 = Vector2.Clamp(v2, Vector2.Zero, level.size);
+            return (int)level.size.Y - (int)v2.Y;
+        }
+
+        int GetX(Vector2 v2)
+        {
+            v2 = Vector2.Clamp(v2, Vector2.Zero, level.size);
+            return ((int)v2.X * 3 - 2) + (3 * 3);
+        }
+
         public void draw(Vector2 player, int direction)
         {
-            for (int y = (int)level.size.Y; y >= -2; y--)
+            // Draw map once
+            if (mapDrawn == false)
             {
-                for (int x = -2; x < level.size.X + 1; x++)
+                for (int y = (int)level.size.Y; y >= -2; y--)
                 {
-                    ConsoleColor color = ConsoleColor.DarkGray;
-                    Vector2 point = new Vector2(x, y);
-                    string spaceLine = " ";
-
-                    // Out of bounds
-                    if (x < 0 || y < 0 || x >= level.size.X || y >= level.size.Y)
+                    for (int x = -2; x < level.size.X + 1; x++)
                     {
-                        // Number grid
-                        if (x < -1 || y < -1)
+                        ConsoleColor color = ConsoleColor.DarkGray;
+                        Vector2 point = new Vector2(x, y);
+                        string spaceLine = " ";
+
+                        // Out of bounds
+                        if (x < 0 || y < 0 || x >= level.size.X || y >= level.size.Y)
                         {
-                            if (!InBounds(x, level.size.X) && !InBounds(y, level.size.Y)) spaceLine += " ";
-                            else spaceLine += x < 0 ? y : x;
+                            // Number grid
+                            if (x < -1 || y < -1)
+                            {
+                                if (!InBounds(x, level.size.X) && !InBounds(y, level.size.Y)) spaceLine += " ";
+                                else spaceLine += x < 0 ? y : x;
+                            }
+
+                            // Border
+                            else
+                            {
+                                drawWall(ConsoleColor.DarkGray);
+                                continue;
+                            }
                         }
 
-                        // Border
+                        // In bounds
                         else
                         {
-                            drawWall(ConsoleColor.DarkGray);
-                            continue;
+                            // Walls
+                            if (level.isWall(point))
+                            {
+                                drawWall();
+                                continue;
+                            }
+
+                            // Beepers
+                            else if (beepers.ContainsKey(point))
+                            {
+                                spaceLine += beepers[point];
+                                color = ConsoleColor.Yellow;
+                            }
+
+                            // Nothing
+                            else
+                            {
+                                spaceLine += artEmpty;
+                            }
                         }
+
+                        // Draw space
+                        if (spaceLine.Length < 3) spaceLine += " ";
+                        spaceLine.draw(color);
                     }
 
-                    // In bounds
-                    else
+                    // Start new line
+                    "".drawLine(ConsoleColor.White);
+
+                    void drawWall(ConsoleColor color = ConsoleColor.DarkGray)
                     {
-                        // Walls
-                        if (level.isWall(point))
-                        {
-                            drawWall();
-                            continue;
-                        }
-
-                        // Player
-                        else if (point == player)
-                        {
-                            spaceLine += artPlayer[direction];
-                            color = ConsoleColor.Yellow;
-                        }
-
-                        // Beepers
-                        else if (beepers.ContainsKey(point))
-                        {
-                            spaceLine += beepers[point];
-                            color = ConsoleColor.Yellow;
-                        }
-
-                        // Nothing
-                        else
-                        {
-                            spaceLine += artEmpty;
-                        }
+                        for (int i = 0; i < 3; i++)
+                            artWall.draw(color);
                     }
-
-                    // Draw space
-                    if (spaceLine.Length < 3) spaceLine += " ";
-                    spaceLine.draw(color);
-                }
-
-                // Start new line
-                "".drawLine(ConsoleColor.White);
-
-                void drawWall(ConsoleColor color = ConsoleColor.DarkGray)
-                {
-                    for (int i = 0; i < 3; i++)
-                        artWall.draw(color);
                 }
             }
+
+            // Draw Player
+            {
+                "*".drawAt(GetX(oldPosition), GetRow(oldPosition));
+                artPlayer[direction].ToString().drawAt(GetX(player), GetRow(player), ConsoleColor.Red);
+            }
+
+            oldPosition = player;
+            mapDrawn = true;
         }
 
         public bool InBounds(Vector2 position) => InBounds(position.X, level.size.X) && InBounds(position.Y, level.size.Y);
