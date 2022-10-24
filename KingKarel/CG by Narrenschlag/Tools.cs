@@ -1,8 +1,8 @@
 ﻿using System.Threading;
-using System;
 using System.Numerics;
+using System;
 
-namespace KingKarel
+namespace Narrenschlag.ConsoleGame
 {
     internal static class Tools
     {
@@ -13,8 +13,6 @@ namespace KingKarel
         {
             Console.ForegroundColor = color;
             Console.Write(text);
-
-            string[] lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
         public static void drawAt(this string text, Vector2 grid, ConsoleColor color = ConsoleColor.DarkGray) => text.drawAt((int)grid.X, (int)grid.Y, color);
@@ -39,11 +37,7 @@ namespace KingKarel
             Console.SetCursorPosition(oldX, oldY);
         }
 
-        public static void wait() => Thread.Sleep((int)Math.Round(HelloKarel.timeBetweenFrames * 1000));
-
-        public static void clear()
-        {
-            Console.Clear();
-        }
+        public static void wait(this float seconds) => Thread.Sleep((int)Math.Round(seconds * 1000));
+        public static void clear() => Console.Clear();
     }
 }

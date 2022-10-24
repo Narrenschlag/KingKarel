@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using System.Numerics;
-using System.Linq;
 using System;
-using System.Reflection.Emit;
-using System.Security.Cryptography;
+
+using Narrenschlag.ConsoleGame;
 
 namespace KingKarel
 {
@@ -70,7 +68,7 @@ namespace KingKarel
                 position = next;
 
                 update($"Moved from {old} to {next}");
-                Tools.wait();
+                wait();
             }
         }
 
@@ -80,7 +78,7 @@ namespace KingKarel
             clampDir();
 
             update("Turned left");
-            Tools.wait();
+            wait();
         }
 
         public static void putBeeper()
@@ -95,7 +93,7 @@ namespace KingKarel
             else throw new Exception("You don't have any beepers to put");
 
             update($"Put beeper ({old} -> {map.BeepersAt(position)})");
-            Tools.wait();
+            wait();
         }
 
         public static void pickBeeper()
@@ -110,14 +108,16 @@ namespace KingKarel
             else throw new Exception("No beeper has been found at that position");
 
             update($"Picked beeper ({old} -> {map.BeepersAt(position)})");
-            Tools.wait();
+            wait();
         }
 
         public static void doNothing()
         {
             update("Did nothing");
-            Tools.wait();
+            wait();
         }
+
+        private static void wait() => (HelloKarel.timeBetweenFrames / 2).wait();
         #endregion
 
         #region Private Functions

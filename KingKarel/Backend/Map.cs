@@ -3,6 +3,8 @@ using System.Numerics;
 using System.Linq;
 using System;
 
+using Narrenschlag.ConsoleGame;
+
 namespace KingKarel
 {
     internal class Map
